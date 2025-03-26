@@ -72,6 +72,18 @@ URPositionHardwareInterface::on_init(const hardware_interface::HardwareInfo& sys
 
   info_ = system_info;
 
+  state_helper_ = ur_robot_driver::URStateHelper(
+    urcl_joint_positions_, urcl_joint_velocities_, urcl_joint_efforts_, urcl_ft_sensor_measurements_,
+    actual_dig_out_bits_, actual_dig_in_bits_, safety_status_bits_, analog_io_types_, robot_status_bits_,
+    tool_analog_input_types_, tool_analog_input_, standard_analog_input_, standard_analog_output_,
+    tool_output_voltage_, robot_mode_, safety_mode_, tool_mode_, tool_output_current_, tool_temperature_,
+    speed_scaling_combined_, initialized_, robot_program_running_,
+    urcl_tcp_pose_, tcp_rotation_buffer.x, tcp_rotation_buffer.y, tcp_rotation_buffer.z, tcp_rotation_buffer.w,
+    get_robot_software_version_major_, get_robot_software_version_minor_, get_robot_software_version_bugfix_,
+    get_robot_software_version_build_, actual_dig_out_bits_copy_, actual_dig_in_bits_copy_, safety_status_bits_copy_, analog_io_types_copy_,
+    robot_status_bits_copy_, tool_analog_input_types_copy_, tool_output_voltage_copy_, robot_mode_copy_,
+    safety_mode_copy_, tool_mode_copy_, system_interface_initialized_, robot_program_running_copy_);
+
   // initialize
   urcl_joint_positions_ = { { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
   urcl_joint_velocities_ = { { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
@@ -284,39 +296,8 @@ std::vector<hardware_interface::StateInterface> URPositionHardwareInterface::exp
 
   return state_helper_.generate_state_interfaces(
     joint_names, 
-    urcl_joint_positions_,
-    urcl_joint_velocities_,
-    urcl_joint_efforts_,
     info_.hardware_parameters.at("tf_prefix"),
-    sensor_names,
-    urcl_ft_sensor_measurements_,
-    actual_dig_out_bits_copy_,
-    actual_dig_in_bits_copy_,
-    safety_status_bits_copy_,
-    analog_io_types_copy_,
-    robot_status_bits_copy_,
-    tool_analog_input_types_copy_,
-    tool_analog_input_,
-    standard_analog_input_,
-    standard_analog_output_,
-    tool_output_voltage_copy_,
-    robot_mode_copy_,
-    safety_mode_copy_,
-    tool_mode_copy_,
-    tool_output_current_,
-    tool_temperature_,
-    speed_scaling_combined_,
-    system_interface_initialized_,
-    robot_program_running_copy_,
-    urcl_tcp_pose_,
-    tcp_rotation_buffer.x,
-    tcp_rotation_buffer.y,
-    tcp_rotation_buffer.z,
-    tcp_rotation_buffer.w,
-    get_robot_software_version_major_,
-    get_robot_software_version_minor_,
-    get_robot_software_version_bugfix_,
-    get_robot_software_version_build_);
+    sensor_names);
 }
 
 std::vector<hardware_interface::CommandInterface> URPositionHardwareInterface::export_command_interfaces()
@@ -969,19 +950,19 @@ void URPositionHardwareInterface::updateNonDoubleValues()
   // system_interface_initialized_ = initialized_ ? 1.0 : 0.0;
   // robot_program_running_copy_ = robot_program_running_ ? 1.0 : 0.0;
 
-  state_helper_.update_non_double_values(
-        actual_dig_out_bits_, actual_dig_out_bits_copy_,
-        actual_dig_in_bits_, actual_dig_in_bits_copy_,
-        safety_status_bits_, safety_status_bits_copy_,
-        analog_io_types_, analog_io_types_copy_,
-        robot_status_bits_, robot_status_bits_copy_,
-        tool_analog_input_types_, tool_analog_input_types_copy_,
-        tool_output_voltage_, tool_output_voltage_copy_,
-        robot_mode_, robot_mode_copy_,
-        safety_mode_, safety_mode_copy_,
-        tool_mode_, tool_mode_copy_,
-        initialized_, system_interface_initialized_,
-        robot_program_running_, robot_program_running_copy_);
+  state_helper_.update_non_double_values();
+        // actual_dig_out_bits_, actual_dig_out_bits_copy_,
+        // actual_dig_in_bits_, actual_dig_in_bits_copy_,
+        // safety_status_bits_, safety_status_bits_copy_,
+        // analog_io_types_, analog_io_types_copy_,
+        // robot_status_bits_, robot_status_bits_copy_,
+        // tool_analog_input_types_, tool_analog_input_types_copy_,
+        // tool_output_voltage_, tool_output_voltage_copy_,
+        // robot_mode_, robot_mode_copy_,
+        // safety_mode_, safety_mode_copy_,
+        // tool_mode_, tool_mode_copy_,
+        // initialized_, system_interface_initialized_,
+        // robot_program_running_, robot_program_running_copy_);
 }
 
 void URPositionHardwareInterface::transformForceTorque()
